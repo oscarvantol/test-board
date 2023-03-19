@@ -1,1 +1,5 @@
-<div>Hellow</div>
+<div class="container">
+    <div *ngFor="let testRunName of testRunNames">
+        <test-stats [name]="testRunName"></test-stats>
+    </div>
+</div>
