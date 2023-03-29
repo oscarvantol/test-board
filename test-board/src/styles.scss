@@ -1,4 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 body {
-    font-family: "Segoe UI VSS (Regular)","Segoe UI","-apple-system",BlinkMacSystemFont,Roboto,"Helvetica Neue",Helvetica,Ubuntu,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+    font-family: "Segoe UI VSS (Regular)","Segoe UI","-apple-system",BlinkMacSystemFont,Roboto,"Helvetica Neue",Helvetica,Ubuntu,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    margin-bottom: 20px;
+    padding: 4px 24px;
+    h1 {
+        font-size: 21px;
+        font-weight: 600;
+        margin: 12px 0 10px;
+    }
 }

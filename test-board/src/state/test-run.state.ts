@@ -2,43 +2,56 @@ import { Injectable } from '@angular/core';
 import { Action, createSelector, Selector, State, StateContext } from '@ngxs/store';
 import { GitBranchStats, GitRepository, GitPullRequest } from 'azure-devops-extension-api/Git';
 import { TestRun, TestRun2 } from 'azure-devops-extension-api/Test';
-import { TestRunService } from '../services/test-run.service'
+import { AzureDevOpsService } from '../services/azure-devops.service'
 import { TestRunStateActions } from './test-run.state.actions';
 
 
 export interface TestRunStateModel {
     runs: TestRun[];
-    runNames: string[];
+
 }
 
 @State<TestRunStateModel>({
     name: 'repositories',
     defaults: {
-        runs: [],
-        runNames: []
+        runs: []
     }
 })
 @Injectable()
 export class TestRunState {
 
-    constructor(private _testRunService: TestRunService) {
+    constructor(private _testRunService: AzureDevOpsService) {
 
     }
+
     static testRuns() {
         return createSelector([TestRunState], (state: TestRunStateModel) => {
             return state.runs;
         });
     }
 
-    static testRunNames() {
+    static buildDefinitions() {
         return createSelector([TestRunState], (state: TestRunStateModel) => {
-            return state.runNames;
+            return state.runs
+                .map(testRun => testRun.buildConfiguration.buildDefinitionId)
+                .filter((value, index, array) => array.indexOf(value) === index);
         });
     }
 
-    static runsForName(name: string) {
+    static testRunNames(buildDefinitionId: number) {
         return createSelector([TestRunState], (state: TestRunStateModel) => {
-            return state.runs.filter(run => run.name === name).sort((a, b) => a.id - b.id);
+            return state.runs
+                .filter(tr => tr.buildConfiguration.buildDefinitionId == buildDefinitionId)
+                .map(tr => tr.name).filter((value, index, array) => array.indexOf(value) === index).sort();
+        });
+    }
+
+    static runsForTest(buildDefinitionId: number, name: string) {
+        return createSelector([TestRunState], (state: TestRunStateModel) => {
+            return state.runs.filter(run => 
+                run.buildConfiguration.buildDefinitionId == buildDefinitionId && 
+                run.name === name)
+                .sort((a, b) => a.id - b.id);
         });
     }
 
@@ -68,11 +81,9 @@ export class TestRunState {
     addToState(ctx: StateContext<TestRunStateModel>, batch: TestRun[]) {
         const currentState = ctx.getState();
         const testRuns = currentState.runs.concat(batch);
-        const testRunNames = testRuns.map(tr => tr.name).filter((value, index, array) => array.indexOf(value) === index);
 
         ctx.patchState({
-            runs: testRuns,
-            runNames: testRunNames
+            runs: testRuns
         });
     }
 }

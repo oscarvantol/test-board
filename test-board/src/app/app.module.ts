@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { TestStatsComponent } from './test-stats.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { HttpClientModule } from '@angular/common/http';
+import { BuildDefinitionComponent } from './build-definition.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TestStatsComponent
+    TestStatsComponent,
+    BuildDefinitionComponent
   ],
   imports: [
     BrowserModule,

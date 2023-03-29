@@ -1,0 +1,8 @@
+<div>
+    <h1>{{buildDefinitionId}} - {{buildDefinition?.name}}</h1>
+    <div class="container">
+        <div *ngFor="let testRunName of testRunNames">
+            <test-stats [buildDefinitionId]="buildDefinitionId" [name]="testRunName"></test-stats>
+        </div>
+    </div>
+</div>

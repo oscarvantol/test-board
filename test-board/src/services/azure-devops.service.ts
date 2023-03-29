@@ -2,16 +2,20 @@ import { Injectable } from '@angular/core';
 import * as SDK from "azure-devops-extension-sdk";
 import { getClient, CommonServiceIds, IProjectPageService, IProjectInfo, IExtensionDataService, IExtensionDataManager } from "azure-devops-extension-api";
 import { TestRun, TestRestClient } from "azure-devops-extension-api/Test";
+import { BuildRestClient, BuildDefinition } from "azure-devops-extension-api/Build";
+
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class TestRunService {
+export class AzureDevOpsService {
   private _testClient?: TestRestClient;
   private _project: IProjectInfo | undefined;
+  private _buildClient: BuildRestClient | undefined;
 
   public get online() {
     return document.domain !== "localhost";
@@ -31,6 +35,8 @@ export class TestRunService {
 
     const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService);
     this._testClient = getClient(TestRestClient, {});
+    this._buildClient = getClient(BuildRestClient, {});
+
 
     this._project = await projectService.getProject();
 
@@ -55,5 +61,11 @@ export class TestRunService {
     }
   }
 
-
+  public async getBuildDefinitions(buildDefinitionId: number) {
+    if (this.online) {
+      return await this._buildClient?.getDefinition(this._project?.id ?? "", buildDefinitionId);
+    } else {
+      return { id: buildDefinitionId, name: 'bdNameOffline' } as BuildDefinition;
+    }
+  }
 }

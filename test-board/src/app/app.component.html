@@ -1,5 +1,6 @@
-<div class="container">
-    <div *ngFor="let testRunName of testRunNames">
-        <test-stats [name]="testRunName"></test-stats>
+<div>
+    <div *ngFor="let buildDefinitionId of buildDefinitionIds">
+        <build-definition [buildDefinitionId]="buildDefinitionId"></build-definition>
     </div>
+    
 </div>

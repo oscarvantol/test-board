@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { TestRun } from 'azure-devops-extension-api/Test';
-import { TestRunService } from 'src/services/test-run.service';
+import { AzureDevOpsService } from 'src/services/azure-devops.service';
 import { TestRunState } from 'src/state/test-run.state';
 import { TestRunStateActions } from 'src/state/test-run.state.actions';
 import LinearGradient from 'zrender/lib/graphic/LinearGradient';
@@ -13,19 +13,22 @@ import LinearGradient from 'zrender/lib/graphic/LinearGradient';
   styleUrls: ['./test-stats.component.scss']
 })
 export class TestStatsComponent implements OnInit {
+  
+  @Input('buildDefinitionId')
+  public buildDefinitionId: number = 0;
   @Input('name')
   public name: string = "";
   testRuns: TestRun[] = [];
   options: any;
 
 
-  constructor(private store: Store, private testRunService: TestRunService) {
+  constructor(private store: Store, private testRunService: AzureDevOpsService) {
 
 
   }
 
   async ngOnInit() {
-    this.store.select(TestRunState.runsForName(this.name))
+    this.store.select(TestRunState.runsForTest(this.buildDefinitionId, this.name))
       .subscribe(testRuns => {
         this.testRuns = testRuns ?? []
         this.setChartData();

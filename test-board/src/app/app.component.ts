@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { TestRun } from 'azure-devops-extension-api/Test';
-import { TestRunService } from 'src/services/test-run.service';
+
+import { AzureDevOpsService } from 'src/services/azure-devops.service';
 import { TestRunState } from 'src/state/test-run.state';
 import { TestRunStateActions } from 'src/state/test-run.state.actions';
 
@@ -11,9 +11,9 @@ import { TestRunStateActions } from 'src/state/test-run.state.actions';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  testRunNames: string[] = [];
+  buildDefinitionIds: number[] = [];
 
-  constructor(private store: Store, private testRunService: TestRunService) {
+  constructor(private store: Store, private testRunService: AzureDevOpsService) {
 
   }
 
@@ -21,9 +21,9 @@ export class AppComponent implements OnInit {
     await this.testRunService.initialize();
     this.store.dispatch(TestRunStateActions.Initialize);
 
-    this.store.select(TestRunState.testRunNames())
-      .subscribe(testRunNames => {
-        this.testRunNames = testRunNames;
+    this.store.select(TestRunState.buildDefinitions())
+      .subscribe(buildDefinitions => {
+        this.buildDefinitionIds = buildDefinitions;
       });
   }
 }
