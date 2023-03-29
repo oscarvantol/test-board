@@ -5,7 +5,7 @@ import { TestRunService } from 'src/services/test-run.service';
 import { TestRunState } from 'src/state/test-run.state';
 import { TestRunStateActions } from 'src/state/test-run.state.actions';
 import LinearGradient from 'zrender/lib/graphic/LinearGradient';
-import _ from 'lodash';
+
 
 @Component({
   selector: 'test-stats',
@@ -81,6 +81,8 @@ export class TestStatsComponent implements OnInit {
   }
 
   onChartClick(event: any) {
-    console.log('chart event:', event.name);
+    
+    console.log(this.testRuns.find(tr=> tr.id == event.name));
+
   }
 }

@@ -3,8 +3,7 @@ import * as SDK from "azure-devops-extension-sdk";
 import { getClient, CommonServiceIds, IProjectPageService, IProjectInfo, IExtensionDataService, IExtensionDataManager } from "azure-devops-extension-api";
 import { TestRun, TestRestClient } from "azure-devops-extension-api/Test";
 import { of } from 'rxjs';
-
-import TestRunsJson from "../assets/data/testruns.json";
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable({
@@ -18,7 +17,7 @@ export class TestRunService {
     return document.domain !== "localhost";
   }
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     if (this.online)
       SDK.init();
   }
@@ -31,7 +30,8 @@ export class TestRunService {
     await SDK.ready();
 
     const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService);
-    this._testClient = getClient(TestRestClient)
+    this._testClient = getClient(TestRestClient, {});
+
     this._project = await projectService.getProject();
 
     if (this._project === undefined)
@@ -42,15 +42,17 @@ export class TestRunService {
 
   }
 
-  public async getAllTestRuns() {
-    const toDate = new Date();
-    const fromDate = new Date();
-    fromDate.setDate(toDate.getDate() - 7);
+  public async getAllTestRuns(top: number, continuationToken?: string) {
+    if (this.online) {
+      const from = new Date();
+      from.setDate(from.getDate() - 7);
+      const to = new Date();
 
-    if (this.online)
-      return (await this._testClient?.queryTestRuns(this._project?.id ?? "", fromDate, toDate));
-    else
-      return of(TestRunsJson.sort() as any as TestRun[]).toPromise();
+      return await this._testClient?.queryTestRuns(this._project?.id ?? "", from, to, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, top, continuationToken);
+    }
+    else {
+      return await this.httpClient.get<TestRun[]>('assets/data/testruns.json').toPromise();
+    }
   }
 
 

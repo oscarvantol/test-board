@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Action, createSelector, Selector, State, StateContext } from '@ngxs/store';
 import { GitBranchStats, GitRepository, GitPullRequest } from 'azure-devops-extension-api/Git';
-import { TestRun } from 'azure-devops-extension-api/Test';
+import { TestRun, TestRun2 } from 'azure-devops-extension-api/Test';
 import { TestRunService } from '../services/test-run.service'
 import { TestRunStateActions } from './test-run.state.actions';
-import _ from 'lodash';
+
 
 export interface TestRunStateModel {
-    runs: Map<string, TestRun[]>;
+    runs: TestRun[];
     runNames: string[];
 }
 
 @State<TestRunStateModel>({
     name: 'repositories',
     defaults: {
-        runs: new Map<string, TestRun[]>(),
+        runs: [],
         runNames: []
     }
 })
@@ -38,24 +38,41 @@ export class TestRunState {
 
     static runsForName(name: string) {
         return createSelector([TestRunState], (state: TestRunStateModel) => {
-            return state.runs.get(name)?.sort((x, y) => x.id < y.id ? 1 : -1).slice(0, 7).sort((x, y) => x.id > y.id ? 1 : -1);
+            return state.runs.filter(run => run.name === name).sort((a, b) => a.id - b.id);
         });
     }
 
     @Action(TestRunStateActions.Initialize)
     async initialize(ctx: StateContext<TestRunStateModel>, _: TestRunStateActions.Initialize) {
-        const testRuns = await this._testRunService.getAllTestRuns() ?? [];
-        const testRunNames = testRuns.map(tr => tr.name);
-        const runMap = new Map<string, TestRun[]>();
-        for (let item in testRunNames) {
-            const name = testRunNames[item];
-            runMap.set(name, testRuns.filter(tr => tr.name == name));
-        }
+        const pageMax: number = 100;
+        let requestCount = 0;
+
+        let results = [];
+        let continuationToken: string | undefined = undefined;
+        do {
+            results = await this._testRunService.getAllTestRuns(pageMax, continuationToken) ?? [];
+            this.addToState(ctx, results);
+            if (results.length == pageMax) {
+                continuationToken = this.getContinuationToken(results[pageMax - 1].lastUpdatedDate);
+            } else {
+                continuationToken = undefined;
+            }
+        } while (continuationToken !== undefined && requestCount++ < 50)
+    }
+
+    getContinuationToken(lastUpdatedDate: Date): string {
+        const strVal = lastUpdatedDate.toISOString()
+        return strVal.substring(0, strVal.length - 1).replace('T', ' ');
+    }
+
+    addToState(ctx: StateContext<TestRunStateModel>, batch: TestRun[]) {
+        const currentState = ctx.getState();
+        const testRuns = currentState.runs.concat(batch);
+        const testRunNames = testRuns.map(tr => tr.name).filter((value, index, array) => array.indexOf(value) === index);
 
         ctx.patchState({
-            runs: runMap,
+            runs: testRuns,
             runNames: testRunNames
         });
     }
-
 }

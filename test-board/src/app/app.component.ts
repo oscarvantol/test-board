@@ -4,7 +4,6 @@ import { TestRun } from 'azure-devops-extension-api/Test';
 import { TestRunService } from 'src/services/test-run.service';
 import { TestRunState } from 'src/state/test-run.state';
 import { TestRunStateActions } from 'src/state/test-run.state.actions';
-import _ from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -12,8 +11,6 @@ import _ from 'lodash';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'test-board';
-  testRuns = new Map<string, TestRun[]>();
   testRunNames: string[] = [];
 
   constructor(private store: Store, private testRunService: TestRunService) {
@@ -24,12 +21,7 @@ export class AppComponent implements OnInit {
     await this.testRunService.initialize();
     this.store.dispatch(TestRunStateActions.Initialize);
 
-    this.store.select(TestRunState.testRuns())
-      .subscribe(testRuns => {
-        this.testRuns = testRuns
-      });
-
-      this.store.select(TestRunState.testRunNames())
+    this.store.select(TestRunState.testRunNames())
       .subscribe(testRunNames => {
         this.testRunNames = testRunNames;
       });

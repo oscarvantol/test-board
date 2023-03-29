@@ -5,6 +5,7 @@ import { TestRunState } from '../state/test-run.state';
 import { AppComponent } from './app.component';
 import { TestStatsComponent } from './test-stats.component';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     }),
