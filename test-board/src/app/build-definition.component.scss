@@ -1,7 +1,89 @@
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+  font-family: "AzureDevOpsMDL2Assets";
+  src: url("../assets/AzDevMDL2.woff") format('woff');
+}
+
 .container {
     display: flex; 
     flex-wrap: wrap;
     border: solid 1px gray;
+    margin-bottom: 3em;
   }
 
   
+a {
+  color: rgb(var(--palette-primary-shade-10, 0, 90, 158));
+}
+
+.fav {
+  
+}
+
+.buildDefinition{
+  font-size: larger;  
+  font-weight: bolder;
+  text-transform: uppercase;
+}
+
+button {
+  background: none;
+  background-color: rgba(var(--palette-neutral-6, 239, 239, 239), 1); 
+  color: rgba(0, 0, 0, .9);
+  color: var(--text-primary-color, rgba(0, 0, 0, .9));
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  &:hover {
+      background-color: rgba(0, 120, 212, 1);
+      background-color: var(--communication-background, rgba(0, 120, 212, 1));
+      color: #fff;
+  }
+}
+
+.ms-Icons {
+  font-family: "AzureDevOpsMDL2Assets";
+  -webkit-font-smoothing: antialiased;
+  margin-right: 3px;
+  top: 2px;
+  position: relative;
+}
+
+.ms-Icon--FavoriteStar:before {
+  content: "\e734 ";
+}
+
+.ms-Icon--Settings:before {
+  top: 1px;
+  position: relative;
+  content: "\e713 ";
+}
+
+.ms-Icon--FavoriteStarFill:before {
+  content: "\e735 ";
+}
+
+.ms-Icon--Hide:before {
+  content: "\e735 ";
+}
+
+.bolt-button {
+  &.bolt-icon-button {
+      border: 0;
+      background: transparent;
+      padding: 8px;
+      &:hover {
+          background-color: rgba(var(--palette-neutral-6, 239, 239, 239), 1);
+      }
+  }
+}
+
+.fabric-icon {
+  align-self: center;
+  display: inline-flex;
+  font-family: "AzureDevOpsMDL2Assets";
+  -webkit-font-smoothing: antialiased;
+  color: rgba(0, 0, 0, .9);
+  color: var(--text-primary-color, rgba(0, 0, 0, .9));
+}

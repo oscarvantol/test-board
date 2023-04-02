@@ -4,6 +4,10 @@ export namespace TestRunStateActions {
         static readonly type = `[TestRunStateActions] Initialize`;
     }
 
-   
+    export class SetFavorite {
+        static readonly type = `[TestRunStateActions] SetFavorite`;
+        constructor(public id: string, public isFavorite: boolean) {
+        }
+    }
 
 }

@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     await this.testRunService.initialize();
     this.store.dispatch(TestRunStateActions.Initialize);
-
+    
     this.store.select(TestRunState.buildDefinitions())
       .subscribe(buildDefinitions => {
         this.buildDefinitionIds = buildDefinitions;

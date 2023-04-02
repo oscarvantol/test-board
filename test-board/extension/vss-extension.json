@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "test-board",
     "publisher": "ovantol",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "name": "test-board",
     "description": "Test run overview for Azure DevOps",
     "demands": ["api-version/5.0"],

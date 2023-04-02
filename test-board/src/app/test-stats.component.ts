@@ -3,8 +3,6 @@ import { Store } from '@ngxs/store';
 import { TestRun } from 'azure-devops-extension-api/Test';
 import { AzureDevOpsService } from 'src/services/azure-devops.service';
 import { TestRunState } from 'src/state/test-run.state';
-import { TestRunStateActions } from 'src/state/test-run.state.actions';
-import LinearGradient from 'zrender/lib/graphic/LinearGradient';
 
 
 @Component({
@@ -13,7 +11,7 @@ import LinearGradient from 'zrender/lib/graphic/LinearGradient';
   styleUrls: ['./test-stats.component.scss']
 })
 export class TestStatsComponent implements OnInit {
-  
+
   @Input('buildDefinitionId')
   public buildDefinitionId: number = 0;
   @Input('name')
@@ -32,7 +30,7 @@ export class TestStatsComponent implements OnInit {
       .subscribe(testRuns => {
         this.testRuns = testRuns ?? []
         this.setChartData();
-      });
+      });   
   }
 
   setChartData() {
@@ -50,10 +48,15 @@ export class TestStatsComponent implements OnInit {
       passedTests.push(passedStats?.count ?? 0);
     }
 
+
+
     this.options = {
       legend: {
         data: ['failed tests', 'passed tests'],
         align: 'left',
+        textStyle: {
+          color: "#AAA"
+        }
       },
       tooltip: {},
       xAxis: {
@@ -84,8 +87,6 @@ export class TestStatsComponent implements OnInit {
   }
 
   onChartClick(event: any) {
-    
-    console.log(this.testRuns.find(tr=> tr.id == event.name));
-
+    console.log(this.testRuns.find(tr => tr.id == event.name));
   }
 }

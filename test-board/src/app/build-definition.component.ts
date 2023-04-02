@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { BuildDefinition } from 'azure-devops-extension-api/Build';
-import { AzureDevOpsService } from 'src/services/azure-devops.service';
+import { AzureDevOpsService } from '../services/azure-devops.service';
+import { TestRunStateActions } from '../state/test-run.state.actions';
 import { TestRunState } from '../state/test-run.state';
 
 
@@ -16,6 +17,7 @@ export class BuildDefinitionComponent implements OnInit {
 
   public testRunNames: string[] = [];
   public buildDefinition: BuildDefinition | undefined;
+  public isFavorite: boolean = false;
 
   constructor(private store: Store, private azureDevopsService: AzureDevOpsService) {
 
@@ -27,7 +29,16 @@ export class BuildDefinitionComponent implements OnInit {
         this.testRunNames = testRunNames ?? []
       });
 
-    this.buildDefinition = await this.azureDevopsService.getBuildDefinitions(this.buildDefinitionId);
-  }
+      this.store.select(TestRunState.isFavorite(this.buildDefinitionId))
+      .subscribe(favorite => {
+        this.isFavorite = !!favorite;
+      });
 
+    this.buildDefinition = await this.azureDevopsService.getBuildDefinitions(this.buildDefinitionId);
+
+  }
+  
+  public async toggleFavorite() {
+    this.store.dispatch(new TestRunStateActions.SetFavorite(`${this.buildDefinitionId}`, !this.isFavorite));
+  }
 }
