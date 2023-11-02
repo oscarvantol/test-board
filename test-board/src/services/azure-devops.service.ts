@@ -48,6 +48,8 @@ export class AzureDevOpsService {
 
     if (this._project === undefined)
       throw ("Unable to load project");
+
+    await this.initDataManager();
   }
 
   private async initOffline() {
@@ -63,7 +65,7 @@ export class AzureDevOpsService {
   public async getAllTestRuns(top: number, continuationToken?: string) {
     if (this.online) {
       const from = new Date();
-      from.setDate(from.getDate() - 7);
+      from.setDate(from.getDate() - 6);
       const to = new Date();
 
       return await this._testClient?.queryTestRuns(this._project?.id ?? "", from, to, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, top, continuationToken);

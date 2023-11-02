@@ -30,7 +30,7 @@ export class TestStatsComponent implements OnInit {
       .subscribe(testRuns => {
         this.testRuns = testRuns ?? []
         this.setChartData();
-      });   
+      });
   }
 
   setChartData() {
@@ -87,6 +87,8 @@ export class TestStatsComponent implements OnInit {
   }
 
   onChartClick(event: any) {
-    console.log(this.testRuns.find(tr => tr.id == event.name));
+    let run = this.testRuns.find(tr => tr.id == event.name);
+    if (run !== undefined)
+      window.open(run.webAccessUrl, 'testrun');
   }
 }
